@@ -1,0 +1,329 @@
+<html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Basic Page - No Banner</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="content layout-2" role="document">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="container-fluid"><main>
+<div class="row">
+<div class="col-xs-12 col-sm-offset-2 col-sm-8">
+<h1 style="color: #b1810b; text-align: left;">HW10 - Challenge</h1>
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;">
+<p></p>
+<ul>
+<li><a href="#1">Description</a></li>
+<li><a href="#2">Instructions</a></li>
+<li><a href="#3" style="background-color: #ffffff;">Testing</a></li>
+<li><a href="#4">Submit</a></li>
+</ul>
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;">
+<h2 id="1">Description</h2>
+<p>For this Homework, you will be implementing a single class: <code>MazeNavigator</code>. This class will process a file input to navigate a maze for users.&nbsp;</p>
+<p></p>
+<p>Note: 5 points of your Challenge grade is based on Coding Style.&nbsp; You will need to follow the standards described on Brightspace . Use the "Run" button to check your Coding Style without using a submission.&nbsp;</p>
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;">
+<h2 id="2">Instructions</h2>
+<p>This program will navigate a character through a 10 x 10 maze! The characters moves will be determined by 1 or more players, whose move selections will be stored in a file available to the program. The character will be represented by an 'X', which will move through the blank spaces in the maze as moves are processed. Here is an example:&nbsp;</p>
+<p></p>
+<pre>Welcome! Initial Maze:
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , ,X, , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+Move number: 1
+Player: 2
+Move: Left
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , ,X, , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+Move number: 2
+Player: 1
+Move: Right
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , ,X, , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]
+[ , , , , , , , , , ]<br><br></pre>
+<p>In this example, there were two moves. Player 2 moved left and Player 1 moved right. The final position of the character by the end of the run is the same. As the solution is concurrent, the order of players is not pre-determined. In the next run, Player 1 may go first. The moves for each player are included in their own files. Your solution will synchronize access to the maze to ensure the player threads do not encounter race conditions.&nbsp;</p>
+<h3>Requirements Overview:&nbsp;</h3>
+<ul>
+<li>Create a class that utilizes static variables in a deterministic and multithreaded manner. Your solution must have five static variables:&nbsp;
+<ul>
+<li>currentRow: An int, the current row associated with the maze position. The initial position is 4.&nbsp;</li>
+<li>currentColumn: An int, the current column associated with the maze position. The initial position is 4.</li>
+<li>moveNumber: An int, the number of moves made so far.&nbsp;</li>
+<li>started: A boolean, the status of whether the maze navigation has started yet.&nbsp;</li>
+<li>maze: A char[][], the 10 x 10 char array that represents the maze.&nbsp;</li>
+</ul>
+</li>
+<li>The class must extend Thread.&nbsp;</li>
+<li>Objects of the class will be passed an integer player number and a String filename containing the moves for that player.&nbsp;</li>
+<li>Within the run() method, the class must iterate through each line of the file and apply the move to the character in the maze.&nbsp;</li>
+<li>The processing described above should happen concurrently for multiple threads.&nbsp;
+<ul>
+<li>The only synchronized portions of the solution should be for accessing shared resources or printing to the console.&nbsp;</li>
+<li>Do not synchronize the entire run method. You will not receive credit if you do so.&nbsp;</li>
+</ul>
+</li>
+</ul>
+<p></p>
+<h3>Class Requirements:&nbsp;</h3>
+<p>MazeNavigator must extend Thread.&nbsp;</p>
+<h4>Fields</h4>
+<table border="1px" cellspacing="0" cellpadding="7" width="903" style="border-collapse: collapse; width: 100%; height: 184px; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr style="height: 39px;" valign="TOP">
+<td style="width: 297px; height: 39px;">
+<p><strong>Field Name</strong></p>
+</td>
+<td style="width: 88px; height: 39px;">
+<p><strong>Type</strong></p>
+</td>
+<td style="width: 191px; height: 39px;">
+<p><strong>Access Modifier</strong></p>
+</td>
+<td style="width: 326px; height: 39px;">
+<p><strong>Description</strong></p>
+</td>
+</tr>
+<tr style="height: 39px;" valign="TOP">
+<td style="width: 297px; height: 39px;">
+<p>currentRow</p>
+</td>
+<td style="width: 88px; height: 39px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 39px;">
+<p>private static</p>
+</td>
+<td style="width: 326px; height: 39px;">
+<p>The current row of the players' position in the maze.&nbsp;</p>
+</td>
+</tr>
+<tr style="height: 67px;" valign="TOP">
+<td style="width: 297px; height: 67px;">
+<p>currentColumn</p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private static</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The current column of the players' position in the maze.&nbsp;</p>
+</td>
+</tr>
+<tr style="height: 67px;" valign="TOP">
+<td style="width: 297px; height: 67px;">
+<p>moveNumber</p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private static</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The current number of moves played in the game.&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="width: 297px;">
+<p>started</p>
+</td>
+<td style="width: 88px;">
+<p>boolean</p>
+</td>
+<td style="width: 191px;">
+<p>private static</p>
+</td>
+<td style="width: 326px;">
+<p>An indicator of whether or not the game has started.&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="width: 297px;">
+<p>maze</p>
+</td>
+<td style="width: 88px;">
+<p>char[][]</p>
+</td>
+<td style="width: 191px;">
+<p>private static</p>
+</td>
+<td style="width: 326px;">
+<p>A 10 x 10 maze that the players will navigate.&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="width: 297px;">
+<p>playerNumber</p>
+</td>
+<td style="width: 88px;">
+<p>int</p>
+</td>
+<td style="width: 191px;">
+<p>private</p>
+</td>
+<td style="width: 326px;">
+<p>The number associated with this player.&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td style="width: 297px;">
+<p>fileName</p>
+</td>
+<td style="width: 88px;">
+<p>String</p>
+</td>
+<td style="width: 191px;">
+<p>private</p>
+</td>
+<td style="width: 326px;">
+<p>The name of the file containing this player's moves.&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<h4>Constructors</h4>
+<table border="1px" style="margin-left: auto; margin-right: auto; width: 700px;">
+<tbody>
+<tr>
+<td colspan="1" rowspan="1" style="width: 521px;">
+<p>Parameters</p>
+</td>
+<td colspan="1" rowspan="1" style="width: 178px;">
+<p>Access Modifier(s)</p>
+</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="1" style="width: 521px;">
+<p>int playerNumber, String fileName</p>
+</td>
+<td colspan="1" rowspan="1" style="width: 178px;">
+<p>public</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<h4>Methods</h4>
+<p>You may implement any methods you choose to accomplish the goal, as long as you have a run() method that will process data according to the implementation requirements.&nbsp;</p>
+<p></p>
+<h4>Implementation Details</h4>
+<p>The specifics of the implementation are up to you. The general requirements are below.&nbsp;</p>
+<ul>
+<li>Remember, all access to shared resources must be synchronized to prevent race conditions.&nbsp;</li>
+<li>Before the game begins, print the initial maze with a welcome message.&nbsp;
+<ul>
+<li>To initialize the maze, set the element at [4][4] to 'X'. All other elements should be set to a space (' ').&nbsp;</li>
+<li>During printing, be sure to separate elements with commas and include opening and closing brackets for each line. For an example, review the sample output.&nbsp;</li>
+<li>Any thread may do this, but it should only be done once!&nbsp;</li>
+</ul>
+</li>
+<li>Begin reading the file. Each line contains a move that corresponds to an integer between 1 and 4, inclusive.&nbsp;
+<ul>
+<li>1: Left</li>
+<li>2: Right</li>
+<li>3: Up</li>
+<li>4: Down</li>
+<li>Any other value should be treated as an error. Print "Error, invalid input!" and do not modify the maze for that turn.&nbsp;</li>
+</ul>
+</li>
+<li>If the move is valid, move the 'X' character to the new position. Set the previous element to a space (' ').&nbsp;</li>
+<li>Print the move number and player number. Additionally, print the updated maze, separating elements by a comma, with square braces surrounding each row [].&nbsp;</li>
+<li>That's it! Repeat for as many moves as are included in the file.&nbsp;</li>
+</ul>
+<p></p>
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;">
+<h2 id="3">Testing</h2>
+<p>No local test cases are provided with this assignment. However, we provide the following main method and sample test files as examples:&nbsp;</p>
+<p></p>
+<p><strong>Main Method</strong></p>
+<pre>public static void main(String[] args) {<br>    try {<br>        MazeNavigator[] mazeNavigators = {new MazeNavigator(1, "PlayerOneMoves.txt"),<br>                new MazeNavigator(2, "PlayerTwoMoves.txt")}; <br><br>        for (int i = 0; i &lt; mazeNavigators.length; i++) {<br>            mazeNavigators[i].start();<br>        }<br>        for (int i = 0; i &lt; mazeNavigators.length; i++) {<br>            mazeNavigators[i].join();<br>        }<br>    } catch (Exception ex) {<br>        ex.printStackTrace();<br>        return;<br>    }<br>}<br><br><br><strong>PlayerOneMoves.txt</strong></pre>
+<pre>3<br>3<br>3<br>1<br>2<br><br><strong>PlayerTwoMoves.txt</strong></pre>
+<p>4<br>4<br>4<br><br></p>
+<p>Testing Recommendations</p>
+<ul>
+<li>Create additional threads with new files.</li>
+<li>Change the file contents, experiment with 1 or more lines in each.&nbsp;</li>
+<li>Verify that your solution is actually concurrent. It should not process each player in order or rotate between them in a pre-determined manner.</li>
+</ul>
+<h3>Notes:&nbsp;</h3>
+<ul>
+<li>Files may contain any number of moves. Players may have different numbers of moves.&nbsp;</li>
+<li>If a move will leave the valid range of indexes in the array, loop back around. That is, incrementing 9 would result in 0, or decrementing 0 would result in 9.</li>
+<li>If a move is not one of the valid options (1, 2, 3, or 4), print "Error, invalid input!" and do not modify the maze for that turn.&nbsp; &nbsp;
+<ul></ul>
+</li>
+<li>Files will only contain integers.&nbsp;</li>
+<li>You do not need to include a main method in your submission, but you should use one during testing.&nbsp;</li>
+<li>You should follow the requirements documented in the Debugging handout for preventing race conditions. Solutions that use excessively broad scope are not considered concurrent and will not receive credit.&nbsp;</li>
+<li>Remember the difference between static and non-static. As there will be multiple MazeNavigator objects, you will need to find a way to implement concurrency among all of them. If your solution does not implement concurrency properly for multiple objects, it will not receive credit.&nbsp;</li>
+<li>You must extend Thread for this assignment.&nbsp;</li>
+</ul>
+<h2 id="4">Submit</h2>
+<p>After testing your solution and verifying that it meets the requirements described in this document, you can submit on Vocareum. Your work will be manually graded within 7 days of the due date.&nbsp;</p>
+</div>
+</div>
+<footer></footer></main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</div>
+</main></div>
+</body></html>

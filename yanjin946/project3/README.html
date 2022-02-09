@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1 style="color: #b1810b;">PJ03</h1>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h2>Arrays and File I/O</h2>
+<p>Create a program in a class called <code>PlayGame.java</code> that reads data from two files <code>ShipPositionsPlayerOne.txt</code> and <code>ShipPositionsPlayerTwo.txt</code> and plays the board game Battleship. A log will be printed with the results. A class called <code>GameLog.java</code> will also be created to help print the log of the results. The input files are provided in the starter code.</p>
+
+<p>
+<b>Overview of Battleship:</b><br> Battleship is a two player game where each player has a board with 10 rows labeled letters A-J and 14 columns labeled numbers 1-14. Each player chooses coordinates to place five ships on their board. One ship spans 5 cells, another ship spans 4 cells, two additional ships span 3 cells, and the final ship spans 2 cells.  The coordinate at the top left of the board is A1 and the coordinate at the bottom left is J14.  As an example, the 5 cell ship can be placed with start coordinate C3 and end coordinate C7 which means that it spans C3, C4, C5, C6, and C7. Ships can be placed horizontally or vertically. Ships cannot be placed diagonally. Ships cannot be placed on top of each other (their coordinates cannot overlap).<br><br>
+
+The two players should not show their ship positions to each other. They will take turns guessing a coordinate where they think the opponent may have placed a ship. If a ship is placed at that location, that guess is a successful hit. Otherwise, it is a miss. It is important to note that the same location cannot be hit twice. Once a hit is made at a location, any subsequent guesses for the same location result in a miss. The goal for each player is to sink all of the opponent's ships (hit every coordinate of every ship). The player that is able to accomplish this more quickly is the winner. It is possible player 1 gets one guess more than player 2 (if player 1 wins on a turn, player 2 does not get a turn even though player 1 has taken one guess more than player 2 at this point).
+
+Note: The description above focuses on the information that will help complete this project. More information about battleship can be found online, such as <a href="https://www.thesprucecrafts.com/the-basic-rules-of-battleship-411069" target="_blank">here.</a><br>
+
+</p>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h2>GameLog.java</h2>
+<h3>Fields</h3>
+    <table width="826" cellpadding="7" cellspacing="0" style="width: 903px; margin-left: auto; margin-right: auto; height: 184px;" border="1px">
+<tbody>
+<tr valign="TOP" style="height: 39px;">
+<td style="width: 297px; text-align: center; height: 39px;">
+<p><strong>Field Name </strong></p>
+</td>
+<td style="width: 88px; text-align: center; height: 39px;">
+<p><strong>Type</strong></p>
+</td>
+<td style="width: 191px; text-align: center; height: 39px;">
+<p><strong>Access Modifier</strong></p>
+</td>
+<td style="width: 326px; text-align: center; height: 39px;">
+<p><strong>Description</strong></p>
+</td>
+</tr>
+<tr valign="TOP" style="height: 39px;">
+<td style="width: 297px; height: 39px;">
+<p><strong>winningPlayer</strong></p>
+</td>
+<td style="width: 88px; height: 39px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 39px;">
+<p>private</p>
+</td>
+<td style="width: 326px; height: 39px;">
+<p>The player number that won the game (1 for player 1 or 2 for player 2)</p>
+</td>
+</tr>
+<tr valign="TOP" style="height: 67px;">
+<td style="width: 297px; height: 67px;">
+<p><strong>losingPlayerHits</strong></p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The number of times the losing player hit a location on one of the other player's ships.</p>
+</td>
+</tr>
+<tr valign="TOP" style="height: 67px;">
+<td style="width: 297px; height: 67px;">
+<p><strong>numTurns</strong></p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>int</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The number of turns (guesses at coordinates) that it took the winning player to find all of the opponent's ships.</p>
+</td>
+</tr>  
+    <tr valign="TOP" style="height: 67px;">
+<td style="width: 297px; height: 67px;">
+<p><strong>boardPatternOne</strong></p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>String</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The board pattern for player one's board ("Top Heavy", "Middle Heavy", "Bottom Heavy", or "Scattered").</p>
+</td>
+</tr> 
+    <tr valign="TOP" style="height: 67px;">
+<td style="width: 297px; height: 67px;">
+<p><strong>boardPatternTwo</strong></p>
+</td>
+<td style="width: 88px; height: 67px;">
+<p>String</p>
+</td>
+<td style="width: 191px; height: 67px;">
+<p>private</p>
+</td>
+<td style="width: 326px; height: 67px;">
+<p>The board pattern for player two's board ("Top Heavy", "Middle Heavy", "Bottom Heavy", or "Scattered").</p>
+</td>
+</tr> 
+</tbody>
+</table>
+<p>Note: Details on board patterns are in the next section.<br><br></p>
+<h4><strong>Constructor</strong></h4>
+<table width="827" cellpadding="7" cellspacing="0" style="width: 911px; margin-left: auto; margin-right: auto;" border="1px">
+<tbody>
+<tr valign="TOP">
+<td style="width: 146px; text-align: center;">
+<p><strong>Access Modifier</strong></p>
+</td>
+<td style="width: 152px; text-align: center;">
+<p><strong>Constructor Name</strong></p>
+</td>
+<td style="width: 152px; text-align: center;">
+<p><strong>Input Parameters</strong></p>
+</td>
+<td style="width: 460px; text-align: center;">
+<p><strong>Description</strong></p>
+</td>
+</tr>
+<tr valign="TOP">
+<td style="width: 146px;">
+<p>public</p>
+</td>
+<td style="width: 152px;">
+<p>GameLog</p>
+</td>
+<td style="width: 152px;">
+<p>int winningPlayer, int losingPlayerHits, int numTurns, String boardPatternOne, String boardPatternTwo</p>
+</td>
+<td style="width: 460px;">
+<p>Construct a newly allocated <b>GameLog </b>object and instantiate the fields to their respective parameters.&nbsp;</p>
+<p></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h3>Methods</h3>
+    <table width="853" cellpadding="7" cellspacing="0" style="width: 912px; margin-left: auto; margin-right: auto; height: 458px;" border="1px">
+<tbody>
+<tr valign="TOP" style="height: 67px;">
+<td height="4" style="width: 289px; height: 67px; text-align: center;">
+<p><strong>Method Name </strong></p>
+</td>
+<td style="width: 76px; height: 67px; text-align: center;">
+<p><strong>Return Type</strong></p>
+</td>
+<td style="width: 92px; height: 67px; text-align: center;">
+<p><strong>Access Modifier</strong></p>
+</td>
+<td style="width: 163px; height: 67px; text-align: center;">
+<p><strong>Input Parameters</strong></p>
+</td>
+<td style="width: 291px; height: 67px; text-align: center;">
+<p><strong>Description</strong></p>
+</td>
+</tr>
+<tr valign="TOP" style="height: 199px;">
+<td style="width: 289px;">
+<p>toString</p>
+</td>
+<td style="width: 76px;">
+<p>String</p>
+</td>
+<td style="width: 92px;">
+<p>public</p>
+</td>
+<td style="width: 163px;">
+<p>None</p>
+</td>
+<td style="width: 291px;">
+<p>Returns the String representation of this&nbsp;<strong>Session</strong>.</p>
+<p>For Example, given the following fields:</p>
+<ul>
+<li><strong>winningPlayer</strong>= 2</li>
+<li><strong>losingPlayerHits</strong>= 0</li>
+<li><strong>numTurns</strong>= 17</li>
+<li><strong>boardPatternOne</strong>= "Bottom Heavy"</li>
+<li><strong>boardPatternTwo</strong>= "Bottom Heavy"</li>
+</ul>
+<p>The result of calling&nbsp;<strong>toString()</strong>&nbsp;would be:</p>
+<ul>
+<li>"Battleship Game Log:\nWinning Player: Player 2\nHits: 0 - 17\nNumber of Turns To Win: 17\nPlayer 1 Board Pattern: Bottom Heavy\nPlayer 2 Board Pattern: Bottom Heavy\n"</li>
+</ul>
+<p>&nbsp;</p>
+<p></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h2>PlayGame.java</h2>
+<p>This class will include a main method in which the game of battleship will be played. For the purposes of this task, the ship arrangements for the two players are predetermined and are stored in input files. These input files are provided in the startercode and are named ShipPositionsPlayerOne.txt and ShipPositionsPlayerTwo.txt. See the example section for information on how these input files are formatted. Below are the steps to play the game that the program should perform. The examples section has more detail about the format of the output. </p>
+<ul>
+  <li>Read the ship arrangements for both players from the input files <code>ShipPositionsPlayerOne.txt</code> and <code>ShipPositionsPlayerTwo.txt</code>. Create variables to save these arrangements. You may assume that each file is valid and contains exactly 17 cells with ships and 123 empty cells.</li>
+  <li>Display the welcome message. Then, create a scanner. During the game, prompt both players to enter a row letter and a column number for the coordinate that they want to guess. Use the ship arrangements stored previously to determine whether the attempt was a hit or a miss. Keep prompting players for their guesses until one player has has won the game. During the game, keep track of the number of hits for each player and the number of turns.</li>
+  <li>Print the congratulations message for the winning player.</li>
+  <li>Determine the board pattern of each player's board. The criteria for identifying the pattern is explained below:<br>
+  <ul>
+      <li>If the majority of hits (9 or more) are found in the top 3 rows of the board, the board pattern is <code>"Top Heavy"</code><br></li>
+  <li>If the majority of hits (9 or more) are found in the middle 4 rows of the board, the board pattern is <code>"Middle Heavy"</code><br></li>
+  <li>If the majority of hits (9 or more) are found in the bottom 3 rows of the board, the board pattern is <code>"Bottom Heavy"</code><br></li>
+  <li>If none of the three areas above contain 9 or more hits, the board pattern is <code>"Scattered"</code><br></li>
+      </ul>
+  </li>
+  <li>Create a <code>GameLog</code> object with the necessary parameters. Call the <code>toString()</code> method on this object and write the String that is returned to a file called GameLog.txt.</li>
+</ul>
+    
+    <h2>Implementation Recommendations</h2>
+    <p>
+        This project is more open-ended than most of the previous assignments. While this gives you more freedom in how you approach your solution, it does increase the risk of difficult to identify bugs. We have a few recommendations that will help you succeed: 
+        <ul>
+            <li>Before you begin programming, make a list of all the fields and methods you believe you will need. Consider what types of data you'll need to store and how to access it.</li>
+            <li>Design your solution! Again, before you begin programming, write out a flow of control that documents how the solution will perform. Use this to guide your implementation</li>
+            <li>Test your code! We provide samples in this handout, as well as a local test case. Write additional test cases using the same format and tools. This will help you debug issues and ensure you receive a good score on Vocareum! Given the long lines of input for this assignment, we highly recommend testing locally before you submit.</li>
+            <li>Lastly, start early! Waiting until the last moment to design your program increases the likelihood of logical errors.</li>
+    </ul>
+    </p>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h2>Example 1</h2>
+<b>ShipPositionsPlayerOne.txt</b><br>
+    <p>
+        Note that the character 'M' denotes an empty cell (a guess there is a "Miss") and the character 'H' denotes part of a ship (a guess there is a "Hit").
+    </p>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMHMMMHH<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMHHHHMMMMM<br>
+HHHMMMMMMMMMMM<br>
+MMMMMMHHHMMMMM<br><br>
+<b>ShipPositionsPlayerTwo.txt</b><br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMHMMMMH<br>
+MMMMMMMMHMMMMH<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMHHHHMMMMM<br>
+HHHMMMMMMMMMMM<br>
+MMMMMMHHHMMMMM<br>
+<br><br>
+<b>Console Output With User Input in Braces []</b><br>
+Hello, Welcome to Battleship!<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[C]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[C]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[13]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[C]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[14]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[E]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[F]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[G]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[6]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[8]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[2]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[8]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Enemy fleet destroyed. Congratulations player 2!<br>
+<br>
+<b>File Output in GameLog.txt</b><br>
+Battleship Game Log:<br>
+Winning Player: Player 2<br>
+Hits: 0 - 17<br>
+Number of Turns To Win: 17<br>
+Player 1 Board Pattern: Bottom Heavy<br>
+Player 2 Board Pattern: Bottom Heavy<br>
+
+<h2>Example 2</h2>
+<b>ShipPositionsPlayerOne.txt</b><br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+HHHHHMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMMMMHMMMMM<br>
+MMMMMHHMMMMMMM<br>
+HHHMMMMMMMMMMM<br>
+MMMMMMHHHMMMMM<br><br>
+<b>ShipPositionsPlayerTwo.txt</b><br>
+HHMMMMMMMMMMMM<br>
+MMHHHMMMHHHHMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+MMMMMMMMMMMMMM<br>
+HHHMMMMMMMMMMM<br>
+MMMMMMHHHHHMMM<br>
+<br><br>
+<b>Console Output With User Input in Braces []</b><br>
+Hello, Welcome to Battleship!<br>
+Player 1 - Enter a row letter from A - J<br>
+[C]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[A]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[2]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[6]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[5]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[5]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[A]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[4]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[C]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[10]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[8]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[10]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[A]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[8]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[B]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[8]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[2]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[6]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[J]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[11]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[7]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[13]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[2]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[12]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[4]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[G]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[11]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[6]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[H]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[12]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[10]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[I]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[13]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[A]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[11]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[14]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[I]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[J]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[D]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[4]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[1]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[G]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[2]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[G]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:M<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[3]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[12]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[4]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[11]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[5]<br>
+Value:H<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[10]<br>
+Value:H<br>
+Player 2 - Enter a row letter from A - J<br>
+[D]<br>
+Player 2 - Enter a column number from 1 - 14<br>
+[6]<br>
+Value:M<br>
+Player 1 - Enter a row letter from A - J<br>
+[B]<br>
+Player 1 - Enter a column number from 1 - 14<br>
+[9]<br>
+Value:H<br>
+Enemy fleet destroyed. Congratulations player 1!<br>
+<br>
+<b>File Output in GameLog.txt</b><br>
+Battleship Game Log:<br>
+Winning Player: Player 1<br>
+Hits: 17 - 13<br>
+Number of Turns To Win: 29<br>
+Player 1 Board Pattern: Middle Heavy<br>
+Player 2 Board Pattern: Top Heavy<br>
+
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;" />
+<h2 id="3">Testing</h2>
+<p>We have included a program that will allow you to create and run output tests automatically in the Starter Code. This will make it easier for you to verify that each possible progression through your solution is correct. Take a look at <code>RunLocalTest.java</code>. There are many utility features and tools that you do not need to worry about at the moment, instead, focus on the test case. It is included in the Starter Code. Read through it.</p>
+<p></p>
+<p>You can modify the test to test any method you like by following the same format. You can either download the program and run the main method or use the "Run" button on Vocareum to run the test. You can repeat this process for each path.&nbsp;</p>
+<h3>Public Test Cases Note</h3>
+<p>For many homeworks and projects, we will give you test cases that correspond to several of the ways we will be testing your program. But, we will not give you test cases for ALL of the ways we will be testing your program. You should think of other test cases to use that will fully test every aspect of every feature of your program. Just because your program passes all the test cases we give you does not mean that it is fully correct and will receive a score of 100.</p>
+<hr style="width: 100%; height: auto; color: #ffffff; border: 1px inset #cccccc;">
+<h2 id="4">Submit</h2>
+<p>After testing your solution and verifying that it meets the requirements described in this document, you can submit on Vocareum.&nbsp; You have 10 submission attempts to achieve full points.&nbsp;</p>
+<p></p>
+
+</body>
+</html>
+

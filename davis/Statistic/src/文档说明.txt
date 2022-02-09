@@ -1,0 +1,7 @@
+Counter2.java  递归函数，便利一个文件目录树
+Myclient2.java myServer.java  socket通信程序统计字符串,客户端和服务器程序
+myTansient.java  对于 Serializable 接口的使用说明， 在序列化一个object的时候，对于密码之类的使用 tansient 类型，保证不被序列化。
+StatisticsClient,SatisticServer  闫瑾的一对程序，socket
+top.itwinkle.publib 下的 Mtserver Servertherad。 把统计字符的程序写成了多线程的程序，对应的客户端为闫瑾版本。
+test.java 各种测试方法 具体参见内部注释
+
